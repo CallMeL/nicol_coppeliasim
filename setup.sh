@@ -8,7 +8,7 @@ pip install wheel setuptools pip --upgrade
 #torch==1.12.1
 #torchaudio==0.12.1
 
-#pip install torch==1.12.1+cu116 torchvision==0.13.1+cu116 torchaudio==0.12.1 numpy==1.21.6 --extra-index-url https://download.pytorch.org/whl/cu116
+#pip install torch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 numpy==1.21.6 --extra-index-url https://download.pytorch.org/whl/cu116
 #pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
 #mkdir dependencies

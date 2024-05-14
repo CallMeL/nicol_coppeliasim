@@ -28,7 +28,7 @@ class NICOL:
 
 
 
-        coppelia_path = os.getenv("COPPELIASIM_ROOT")
+        coppelia_path = "/Applications/coppeliaSim.app/Contents/MacOS"
 
         if output_path:
             self.output_path = output_path
