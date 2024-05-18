@@ -96,8 +96,10 @@ def point_at(point):
 ############################ Initialize #################################
 nicol = None
 if start_coppelia:
+ 
     nicol = NicolCycleIK(scene="./nicol_hri.ttt",start_scene=True,talker=True)
     participant = Participant("p225")
+    print("############################ Set base Pose ###########################")
 else:
     if use_platform:
         nicol = NicolCycleIK(launch_nicol=False, sleep_timeout=0.003)

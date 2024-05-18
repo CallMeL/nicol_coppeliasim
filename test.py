@@ -1,4 +1,3 @@
-# Copyright (c) 2023. Lennart Clasmeier. GNU General Public License https://www.gnu.org/licenses/gpl-3.0.html.
 
 #!/usr/bin/env python
 
@@ -12,11 +11,7 @@ if start_coppelia:
     import matplotlib.pyplot as plt
     from nicol_base import NicolJointPosition, NicolPose
     from nicol_cycleik import NicolCycleIK
-    try:
-        from dependencies.nicol_tts.nicol_speech import NICOL_TALKER
 
-    except:
-        pass
 
 else:
     from nias_action.core.nicol_cycleik import NicolCycleIK
@@ -30,8 +25,12 @@ import pathlib
 
 import cv2 as cv
 
+import matplotlib.pyplot as plt
+import argparse
 ############################ local functions #################################
-
+parser = argparse.ArgumentParser()
+parser.add_argument("-s","--Start")
+args = parser.parse_args()
 #sample random pose from reachable space
 def get_random_pose(left=False):
     if left:
@@ -87,9 +86,11 @@ def point_at(point):
 ############################ Initialize #################################
 nicol = None
 if start_coppelia:
-    nicol = NicolCycleIK(scene="./nicol_hri.ttt",start_scene=True,talker=True)
-    # participant = Participant("p225")
+    #print("############################start now############################")
+    nicol = NicolCycleIK(scene="./nicol_hri.ttt", start_scene=args.Start, talker=False)
+   # print("################################done initial############################")
 else:
+    #nicol = NicolCycleIK(scene="./nicol_hri.ttt",start_scene=False,talker=False)
     if use_platform:
         nicol = NicolCycleIK(launch_nicol=False, sleep_timeout=0.003)
     else:
@@ -102,87 +103,10 @@ right = nicol.right()   # Right OpenManipulator + RH8D
 
 ############################ Set base Pose ###########################
 
-head.set_joint_position([0,0],block=True)
-right.set_joint_position([1.57] + [0.] * 7,block=True)
-left.set_joint_position([-1.57] + [0.] * 7,block=True)
-if not start_coppelia:
-    right.set_joint_position_for_hand([-np.pi] * 5,block=True)
-
-#right.close_hand(0.85)
-#print(f"joint_position: {right.get_joint_position()}")
-
-#right.set_joint_position_for_hand([np.pi] * 5,block=True)
-
-#print(f"joint_position: {right.get_joint_position()}")
-
-#right.close_hand(0.85)
-
-#time.sleep(5)
-############################ Get Picture ###########################
-left_eye_image = nicol.get_left_eye_camera_img(persistent = True, save_path = "./exportData")
-import matplotlib.pyplot as plt
-import cv2
-
-# Convert the image to RGB if necessary
-left_eye_image_rgb = cv2.cvtColor(left_eye_image, cv2.COLOR_BGR2RGB)
-plt.imshow(left_eye_image_rgb)
-plt.title("Left Eye Camera Image")
-plt.show()
-############################ HRI Stuff #######################################
-
-block_positions = {
-    "red": [0.6,-0.52,0.86],
-    "green": [0.6, -0.375,0.825],
-    "yellow": [0.6, -0.225,0.825],
-    "blue": [0.6, -0.075,0.825],
-    "orange":[0.6, 0.075,0.825]
-    }
-
 if start_coppelia:
-    for name in block_positions.keys():
-        sim = nicol.sim
-        target_handle=sim.getObject("/"+name)
-        position = block_positions[name]
-        if name == "red":
-            position[2] = 0.91
-        sim.setObjectPosition(target_handle,sim.handle_world,position)
-        nicol.step_simulation(1)
-else:
-    input("please place the objects on the table")
+    left_eye_image = nicol.get_frame_camera_img(persistent = True, prefix = "1")
+    print("done")
 
 
-right.set_joint_position([np.pi/2,0,0,0,0,0,0,0])
 
-x = block_positions["blue"][0] - 0.15
-y = block_positions["blue"][1] - 0.05
-z = 0.90
-
-head.set_pose_target(NicolPose(block_positions["blue"],[0,0,0,0]))
-
-right.set_pose_target(NicolPose([x,y,z+0.2],[0,0,np.pi/4, np.pi/4]))
-right.set_pose_target(NicolPose([x,y,z+0.1],[0,0,np.pi/4, np.pi/4]))
-right.set_pose_target(NicolPose([x,y,z],[0,0,np.pi/4, np.pi/4]))
-
-right.close_hand(0)
-if start_coppelia:
-    nicol.step_simulation(100)
-
-right.set_pose_target(NicolPose([x - 0.0,y-0.02,z+0.01],[0,0,np.pi/4, np.pi/4]))
-right.set_pose_target(NicolPose([x - 0.0,y-0.05,z+0.01],[0,0,np.pi/4, np.pi/4]))
-right.set_pose_target(NicolPose([x - 0.05,y-0.1,z+0.025],[0,0,np.pi/4, np.pi/4]))
-right.set_pose_target(NicolPose([x - 0.05,y-0.2,z+0.1],[0,0,np.pi/4, np.pi/4]))
-right.set_pose_target(NicolPose([x + 0.1,y-0.3,z+0.2],[0,0,np.pi/4, np.pi/4]))
-
-right.set_joint_position([np.pi/2])
-right.set_joint_position([np.pi/2]+[0]*7)
-
-head.set_joint_position(NicolJointPosition([0.0, 0.0]))
-right.set_joint_position([1.57, 0., 0., 0., 0., 0., 0., 0.])
-
-#reset right arm in safe position
-right.set_joint_position([0.31, 0.2, -0.2, 1.5, 1.28, 0.0, 0.0, 0.0])
-
-
-if start_coppelia:
-    nicol.stop_simulation()
-    nicol.stop_coppelia()
+    

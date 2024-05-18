@@ -86,7 +86,7 @@ def point_at(point):
 ############################ Initialize #################################
 nicol = None
 if start_coppelia:
-    nicol = NicolCycleIK(scene="./nicol_hri.ttt",start_scene=args.Start,talker=False,output_path="/data/nicol-coppeliasim/nicol-coppeliasim/generatedDataWithArmsNew")
+    nicol = NicolCycleIK(scene="./nicol_hri.ttt",start_scene=args.Start,talker=False)
 else:
     #nicol = NicolCycleIK(scene="./nicol_hri.ttt",start_scene=False,talker=False)
     if use_platform:
@@ -134,7 +134,7 @@ if not start_coppelia:
 
 import pandas as pd
 arms = []
-for i in range(0,10000):
+for i in range(0,10):
     nicol.start_simulation()
     head.set_joint_position([-1.1,0],block=True)
     right.set_joint_position([1.57] + [0.] * 7,block=True)
@@ -146,11 +146,12 @@ for i in range(0,10000):
     pose = get_random_pose(True)
     left.set_pose_target(pose)
     leftArm = left.get_joint_position().position
-    frame = nicol.get_opposite_camera_img(persistent=True,prefix=str(i))
-    frame2 = nicol.get_left_eye_camera_img(persistent=True,prefix=str(i))
+    #frame = nicol.get_opposite_camera_img(persistent=True,prefix=str(i))
+    #frame2 = nicol.get_left_eye_camera_img(persistent=True,prefix=str(i))
     arms.append([leftArm,rightArm])
     df = pd.DataFrame(arms)
-    df.to_csv("./generatedDataWithArmsNew/frame_rgb/armsnew.csv",header=["right","left"],index=None)
+    df.to_csv("./exportData/armsnew.csv",header=["right","left"],index=None)
     nicol.stop_simulation()
     time.sleep(0.1)
-    
+
+frame2 = nicol.get_left_eye_camera_img(persistent = True, save_path = "./exportData")

@@ -50,10 +50,10 @@ class NicolHead:
         #self.cycleik = CycleIK(robot="nicol", chain="right_arm", cuda_device='0', verbose=True)
         urdf_path = "./resources/NICOL.urdf"
         head_0_chain = pk.build_serial_chain_from_urdf(open(urdf_path).read(), "head_tool0_link", "world")
-        self.head_0_chain = head_0_chain.to(dtype=torch.float32, device="cuda:0")
+        self.head_0_chain = head_0_chain.to(dtype=torch.float32, device="cpu")
 
         head_1_chain = pk.build_serial_chain_from_urdf(open(urdf_path).read(), "head_tool1_link", "world")
-        self.head_1_chain = head_1_chain.to(dtype=torch.float32, device="cuda:0")
+        self.head_1_chain = head_1_chain.to(dtype=torch.float32, device="cpu")
 
 
 

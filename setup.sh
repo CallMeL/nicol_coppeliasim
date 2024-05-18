@@ -35,7 +35,7 @@ then
     mkdir dependencies
     cd dependencies
     echo "Installing nicol_tts..."
-    git clone https://github.com/knowledgetechnologyuhh/nicol_tts.git
+    git clone -b dev https://git.informatik.uni-hamburg.de/jangerritha/cycleik.git
     cd nicol_tts
     pip install -r requirements.txt
     cp -r tts_models--en--vctk--vits ../..
@@ -45,5 +45,5 @@ fi
 sudo apt-get install espeak
 
 #cp -r resources/cycleik_weights/* dependencies/cycleik
-#ln ~/NICOL-env/bin/activate .
+#ln ./NICOL-env/bin/activate .
 #source activate

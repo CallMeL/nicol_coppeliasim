@@ -15,9 +15,10 @@ class NicolSideCycleIK(NicolSide):
     def __init__(self,client, start_left_arm=False):
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         if start_left_arm:
-            self.cycleik = CycleIK(robot="nicol", chain="left_arm" ,cuda_device='0', verbose=True)
+            print(self.device)
+            self.cycleik = CycleIK(robot="nicol", chain="left_arm" ,cuda_device=None, verbose=True)
         else:
-            self.cycleik = CycleIK(robot="nicol", chain="right_arm", cuda_device='0', verbose=True)
+            self.cycleik = CycleIK(robot="nicol", chain="right_arm", cuda_device=None, verbose=True)
         super().__init__(client, start_left_arm=start_left_arm, gaikpy_on=False)
 
 
